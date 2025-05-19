@@ -1,1 +1,6 @@
 django
+djangorestframework
+django-filter
+drf-yasg
+djangorestframework-simplejwt
+python-dotenv
