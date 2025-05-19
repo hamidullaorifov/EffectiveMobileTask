@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-{% if proposal.status == 'pending' %}warning{% elif proposal.status == 'accepted' %}success{% else %}danger{% endif %} text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-handshake me-2"></i>
+                        Update Trade Proposal
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Their Offer</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    {% if proposal.ad_receiver.image_url %}
+                                        <img src="{{ proposal.ad_receiver.image_url }}" class="img-fluid rounded mb-3" style="max-height: 200px; width: auto;" alt="{{ proposal.ad_receiver.title }}">
+                                    {% else %}
+                                        <div class="bg-light d-flex align-items-center justify-content-center mb-3" style="height: 150px;">
+                                            <i class="fas fa-image fa-3x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <h5>{{ proposal.ad_receiver.title }}</h5>
+                                    <span class="badge bg-secondary">{{ proposal.ad_receiver.get_category_display }}</span>
+                                    <span class="badge bg-info text-dark">{{ proposal.ad_receiver.get_condition_display }}</span>
+                                    <div class="mt-2">
+                                        <small class="text-muted">Offered by {{ proposal.ad_receiver.user.username }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Your Item</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    {% if proposal.ad_receiver.image_url %}
+                                        <img src="{{ proposal.ad_receiver.image_url }}" class="img-fluid rounded mb-3" style="max-height: 200px; width: auto;" alt="{{ proposal.ad_receiver.title }}">
+                                    {% else %}
+                                        <div class="bg-light d-flex align-items-center justify-content-center mb-3" style="height: 150px;">
+                                            <i class="fas fa-image fa-3x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <h5>{{ proposal.ad_receiver.title }}</h5>
+                                    <span class="badge bg-secondary">{{ proposal.ad_receiver.get_category_display }}</span>
+                                    <span class="badge bg-info text-dark">{{ proposal.ad_receiver.get_condition_display }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Proposal Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Current Status</label>
+                                    <div class="alert alert-{% if proposal.status == 'pending' %}warning{% elif proposal.status == 'accepted' %}success{% else %}danger{% endif %}">
+                                        <strong>{{ proposal.get_status_display }}</strong>
+                                        <span class="float-end">{{ proposal.created_at|timesince }} ago</span>
+                                    </div>
+                                </div>
+                                
+                                {% if proposal.status == 'pending' %}
+                                <div class="mb-3">
+                                    <label class="form-label">Update Status</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <button type="submit" name="status" value="accepted" class="btn btn-success">
+                                            <i class="fas fa-check-circle me-2"></i> Accept Proposal
+                                        </button>
+                                        <button type="submit" name="status" value="rejected" class="btn btn-danger">
+                                            <i class="fas fa-times-circle me-2"></i> Reject Proposal
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if proposal.comment %}
+                                <div class="mb-3">
+                                    <label class="form-label">Message from {{ proposal.ad_receiver.user.username }}</label>
+                                    <div class="p-3 bg-light rounded">
+                                        <i class="fas fa-quote-left me-2 text-muted"></i>
+                                        {{ proposal.comment }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="d-flex justify-content-between">
+                                    <a href="{% url 'manage_proposals' %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-1"></i> Back to Proposals
+                                    </a>
+                                    {% if proposal.status != 'pending' %}
+                                   
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    {% if proposal.status == 'accepted' %}
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle me-2"></i>Proposal Accepted</h5>
+                        <p class="mb-0">You've accepted this trade proposal. Contact {{ proposal.ad_receiver.user.username }} to arrange the exchange.</p>
+                    </div>
+                    {% elif proposal.status == 'rejected' %}
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-times-circle me-2"></i>Proposal Rejected</h5>
+                        <p class="mb-0">You've declined this trade proposal.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

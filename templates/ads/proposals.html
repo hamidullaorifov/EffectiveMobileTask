@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">
+        <i class="fas fa-handshake me-2"></i>My Trade Proposals
+    </h1>
+
+    <ul class="nav nav-tabs mb-4" id="proposalsTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="received-tab" data-bs-toggle="tab" data-bs-target="#received" type="button" role="tab">
+                Received ({{ received_proposals.count }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="sent-tab" data-bs-toggle="tab" data-bs-target="#sent" type="button" role="tab">
+                Sent ({{ sent_proposals.count }})
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="proposalsTabContent">
+        <!-- Received Proposals Tab -->
+        <div class="tab-pane fade show active" id="received" role="tabpanel" aria-labelledby="received-tab">
+            {% if received_proposals %}
+                <div class="list-group">
+                    {% for proposal in received_proposals %}
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <div class="mb-1">
+                                <h5>
+                                    <span class="badge bg-{% if proposal.status == 'pending' %}warning{% elif proposal.status == 'accepted' %}success{% else %}danger{% endif %} me-2">
+                                        {{ proposal.get_status_display }}
+                                    </span>
+                                    {{ proposal.ad_sender.title }}
+                                    <i class="fas fa-exchange-alt mx-2 text-muted"></i>
+                                    {{ proposal.ad_receiver.title }}
+                                </h5>
+                                <small class="text-muted">
+                                    From: {{ proposal.ad_sender.user.username }} • 
+                                    {{ proposal.created_at|timesince }} ago
+                                </small>
+                            </div>
+                            <div>
+                                {% if proposal.status == 'pending' %}
+                                <div class="btn-group">
+                                    <a href="{% url 'update_proposal_status' pk=proposal.pk %}?status=accepted" class="btn btn-sm btn-success">
+                                        <i class="fas fa-check me-1"></i> Accept
+                                    </a>
+                                    <a href="{% url 'update_proposal_status' pk=proposal.pk %}?status=rejected" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-times me-1"></i> Reject
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if proposal.comment %}
+                        <div class="mt-2 p-2 bg-light rounded">
+                            <strong>Message:</strong> {{ proposal.comment }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    You haven't received any trade proposals yet.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sent Proposals Tab -->
+        <div class="tab-pane fade" id="sent" role="tabpanel" aria-labelledby="sent-tab">
+            {% if sent_proposals %}
+                <div class="list-group">
+                    {% for proposal in sent_proposals %}
+                    <div class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <div class="mb-1">
+                                <h5>
+                                    <span class="badge bg-{% if proposal.status == 'pending' %}warning{% elif proposal.status == 'accepted' %}success{% else %}danger{% endif %} me-2">
+                                        {{ proposal.get_status_display }}
+                                    </span>
+                                    {{ proposal.ad_sender.title }}
+                                    <i class="fas fa-exchange-alt mx-2 text-muted"></i>
+                                    {{ proposal.ad_receiver.title }}
+                                </h5>
+                                <small class="text-muted">
+                                    To: {{ proposal.ad_receiver.user.username }} • 
+                                    {{ proposal.created_at|timesince }} ago
+                                </small>
+                            </div>
+                            <div>
+                                <a href="{% url 'ad_detail' pk=proposal.ad_receiver.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i> View Item
+                                </a>
+                            </div>
+                        </div>
+                        {% if proposal.comment %}
+                        <div class="mt-2 p-2 bg-light rounded">
+                            <strong>Your Message:</strong> {{ proposal.comment }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    You haven't sent any trade proposals yet.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Store the active tab in localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    var activeTab = localStorage.getItem('activeProposalsTab');
+    if (activeTab) {
+        var tabTrigger = new bootstrap.Tab(document.querySelector(activeTab));
+        tabTrigger.show();
+    }
+
+    // Update localStorage when a tab is shown
+    var tabEls = document.querySelectorAll('button[data-bs-toggle="tab"]');
+    tabEls.forEach(function(tabEl) {
+        tabEl.addEventListener('shown.bs.tab', function (event) {
+            localStorage.setItem('activeProposalsTab', event.target.getAttribute('data-bs-target'));
+        });
+    });
+});
+</script>
+{% endblock %}

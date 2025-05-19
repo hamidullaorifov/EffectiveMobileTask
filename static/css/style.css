@@ -1,0 +1,40 @@
+body {
+	padding-top: 56px;
+	background-color: #f8f9fa;
+}
+.navbar-brand {
+	font-weight: 700;
+}
+.footer {
+	background-color: #343a40;
+	color: white;
+	padding: 20px 0;
+	margin-top: 40px;
+}
+.card {
+	transition: transform 0.2s;
+}
+.card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.badge-category {
+	background-color: #6c757d;
+	color: white;
+}
+.badge-condition {
+	background-color: #17a2b8;
+	color: white;
+}
+.messages-container {
+	position: fixed;
+	top: 70px;
+	right: 20px;
+	z-index: 1000;
+	width: 300px;
+}
+.search-form{
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}

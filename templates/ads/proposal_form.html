@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-handshake me-2"></i> 
+                        Trade Proposal: {{ ad_receiver.title }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Their Item</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    {% if ad_receiver.image_url %}
+                                        <img src="{{ ad_receiver.image_url }}" class="img-fluid rounded mb-3" style="max-height: 200px; width: auto;" alt="{{ ad_receiver.title }}">
+                                    {% else %}
+                                        <div class="bg-light d-flex align-items-center justify-content-center mb-3" style="height: 150px;">
+                                            <i class="fas fa-image fa-3x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <h5>{{ ad_receiver.title }}</h5>
+                                    <span class="badge bg-secondary">{{ ad_receiver.get_category_display }}</span>
+                                    <span class="badge bg-info text-dark">{{ ad_receiver.get_condition_display }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Your Item</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        
+                                        <div class="mb-3">
+                                            <label for="id_ad_sender" class="form-label">Select your item to trade:</label>
+                                            <select name="ad_sender" class="form-select" id="id_ad_sender" required>
+                                                {% for ad in user_ads %}
+                                                    <option value="{{ ad.pk }}" {% if forloop.first %}selected{% endif %}>
+                                                        {{ ad.title }} ({{ ad.get_condition_display }})
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                            {% if not user_ads %}
+                                                <div class="alert alert-warning mt-2">
+                                                    You don't have any items listed. 
+                                                    <a href="{% url 'ad_create' %}" class="alert-link">Create a listing</a> first.
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="id_comment" class="form-label">Message (optional):</label>
+                                            <textarea name="comment" class="form-control" id="id_comment" rows="3" 
+                                                      placeholder="Add a message to the owner..."></textarea>
+                                        </div>
+                                        
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                            <a href="{% url 'ad_detail' pk=ad_receiver.pk %}" class="btn btn-outline-secondary me-md-2">
+                                                <i class="fas fa-times me-1"></i> Cancel
+                                            </a>
+                                            <button type="submit" class="btn btn-primary" {% if not user_ads %}disabled{% endif %}>
+                                                <i class="fas fa-paper-plane me-1"></i> Send Proposal
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if user_ads %}
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Your Available Items</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for ad in user_ads %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100 {% if forloop.first %}border-primary border-2{% endif %}">
+                                        {% if ad.image_url %}
+                                            <img src="{{ ad.image_url }}" class="card-img-top" alt="{{ ad.title }}" style="height: 120px; object-fit: cover;">
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ ad.title|truncatechars:25 }}</h6>
+                                            <span class="badge bg-secondary">{{ ad.get_category_display }}</span>
+                                            <span class="badge bg-info text-dark">{{ ad.get_condition_display }}</span>
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <a href="{% url 'ad_detail' pk=ad.pk %}" class="btn btn-sm btn-outline-primary w-100">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

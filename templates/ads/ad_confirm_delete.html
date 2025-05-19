@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Confirm Deletion
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">Warning!</h4>
+                        <p>You are about to permanently delete your listing:</p>
+                        <hr>
+                        <h5 class="mb-2">{{ object.title }}</h5>
+                        <div class="d-flex">
+                            <span class="badge bg-secondary me-2">{{ object.get_category_display }}</span>
+                            <span class="badge bg-info text-dark">{{ object.get_condition_display }}</span>
+                        </div>
+                    </div>
+
+                    {% if object.sent_proposals.exists or object.received_proposals.exists %}
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">Active Trade Proposals</h5>
+                        <p>This action will also cancel:</p>
+                        <ul class="mb-0">
+                            <li>{{ object.sent_proposals.count }} proposal(s) you've sent</li>
+                            <li>{{ object.received_proposals.count }} proposal(s) you've received</li>
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'ad_detail' pk=object.pk %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-1"></i> Confirm Delete
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
