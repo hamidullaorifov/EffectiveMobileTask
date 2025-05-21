@@ -2,9 +2,9 @@
 
 A Django-based platform for exchanging goods between users with both web interface and REST API.
 
-Demo :(https://effective-mobile.duckdns.org/))
-Api documentation: https://effective-mobile.duckdns.org/api/docs
-*Note: The demo is hosted on AWS EC2 instance*
+Demo : https://effective-mobile.duckdns.org/  \
+Api documentation: https://effective-mobile.duckdns.org/api/docs  \
+*The demo is hosted on AWS EC2 instance*
 
 ## Features
 
@@ -61,9 +61,9 @@ python manage.py runserver
 ```
 The application will be available at http://localhost:8000
 ### 7. (Optional) Generate data
-Instead of manually creating data open your browser and paste http://localhost:8000/generate url
+Instead of manually creating data open your browser and paste http://localhost:8000/generate url \
 It generates dummy data
 ## API Documentation
-After running the server, access the API documentation at:
+After running the server, access the API documentation at: \
 
 Swagger UI: http://localhost:8000/api/docs/
