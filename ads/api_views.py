@@ -49,7 +49,7 @@ class AdListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
-        return AdCreateUpdateSerializer if self.request.method == 'GET' else AdRetrieveSerializer
+        return AdRetrieveSerializer if self.request.method == 'GET' else AdCreateUpdateSerializer
 
     @swagger_auto_schema(manual_parameters=ad_list_params)
     def get(self, request, *args, **kwargs):

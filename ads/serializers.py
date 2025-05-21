@@ -16,8 +16,8 @@ class AdCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ad
-        fields = ['id', 'title', 'description', 'image_url', 'category', 'condition', 'created_at']
-        read_only_fields = ['created_at']
+        fields = ['id', 'title', 'user', 'description', 'image_url', 'category', 'condition', 'created_at']
+        read_only_fields = ['created_at', 'user']
 
 
 class AdRetrieveSerializer(serializers.ModelSerializer):

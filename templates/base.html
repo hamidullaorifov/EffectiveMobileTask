@@ -52,9 +52,14 @@
                                 <i class="fas fa-user me-2"></i> Profile
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">
-                                <i class="fas fa-sign-out-alt me-2"></i> Logout
-                            </a></li>
+                            <li>
+                                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item" style="background: none; border: none; padding: 0; padding-left: 15px; margin: 0; color: inherit; width: 100%; text-align: left;">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     {% else %}
